@@ -16,8 +16,6 @@
     </section>
 
     <section v-else>
-      <div class="loading" v-if="loading">Loading...</div>
-
       <div class="books">
         <ul v-for="book in books" :key="book.index">
           <li>
@@ -26,6 +24,9 @@
           </li>
         </ul>
       </div>
+
+      <a href="" @click="prevPage" class="prev">前へ</a>
+      <a href="" @click="nextPage" class="next">次へ</a>
     </section>
   </div>
 </template>
@@ -39,7 +40,6 @@ export default {
       books: [],
       keyword: null,
       errored: false,
-      loading: true,
     };
   },
   methods: {
@@ -51,12 +51,12 @@ export default {
         applicationId: "1031111983337341334",
         booksGenreId: "001",
         hits: 20,
+        page: 10,
         keyword: this.keyword,
       };
       axios
         .get(baseURL, { params: params })
         .then((res) => {
-          this.keyword = "";
           res.data.Items.reduce((acc, cur) => {
             acc.push({
               title: cur.Item.title,
@@ -71,6 +71,8 @@ export default {
         })
         .finally(() => (this.loading = false));
     },
+    prevPage() {},
+    nextPage() {},
   },
 };
 </script>
