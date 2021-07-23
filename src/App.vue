@@ -59,7 +59,7 @@ export default {
           res.data.Items.reduce((acc, cur) => {
             acc.push({
               title: cur.Item.title,
-              img: cur.Item.smallImageUrl,
+              img: cur.Item.mediumImageUrl,
             });
             return (this.books = acc);
           }, []);
@@ -77,5 +77,8 @@ export default {
 <style>
 h1 {
   font-size: 32px;
+}
+ul {
+  list-style: none;
 }
 </style>
