@@ -7,6 +7,9 @@
       placeholder="検索キーワード"
       @keydown.enter="search"
     />
+    <p>{{ pageCount }}ページ目</p>
+    <router-link to="/page/:id" @click="prevPage">前へ</router-link>
+    <router-link to="/page/:id" @click="nextPage">次へ</router-link>
 
     <section class="error" v-if="errored">
       <p>
@@ -15,35 +18,28 @@
       </p>
     </section>
 
-    <section v-else>
-      <div class="books">
-        <ul v-for="book in books" :key="book.index">
-          <li>
-            <h3>{{ book.title }}</h3>
-            <img :src="book.img" alt="" />
-          </li>
-        </ul>
-      </div>
-
-      <a href="" @click="prevPage" class="prev">前へ</a>
-      <a href="" @click="nextPage" class="next">次へ</a>
-    </section>
+    <Page v-else :books="books"></Page>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import Page from "./components/Page";
 
 export default {
+  components: {
+    Page,
+  },
   data() {
     return {
       books: [],
       keyword: null,
+      pageCount: 1,
       errored: false,
     };
   },
   methods: {
-    search(event) {
+    async search(event) {
       if (event.keyCode !== 13) return;
       const baseURL =
         "https://app.rakuten.co.jp/services/api/BooksTotal/Search/20170404";
@@ -51,10 +47,10 @@ export default {
         applicationId: "1031111983337341334",
         booksGenreId: "001",
         hits: 20,
-        page: 10,
+        page: this.pageCount,
         keyword: this.keyword,
       };
-      axios
+      await axios
         .get(baseURL, { params: params })
         .then((res) => {
           res.data.Items.reduce((acc, cur) => {
@@ -68,11 +64,22 @@ export default {
         .catch((err) => {
           console.log(err);
           this.errored = true;
-        })
-        .finally(() => (this.loading = false));
+        });
     },
-    prevPage() {},
-    nextPage() {},
+    prevPage() {
+      if (this.pageCount <= 1) {
+        this.pageCount = 20;
+      } else {
+        this.pageCount -= 1;
+      }
+    },
+    nextPage() {
+      if (this.pageCount >= 20) {
+        this.pageCount = 1;
+      } else {
+        this.pageCount += 1;
+      }
+    },
   },
 };
 </script>
