@@ -21,7 +21,7 @@
       <div class="books">
         <ul v-for="book in books" :key="book.index">
           <li>
-            <h3>タイトル: {{ book.title }}</h3>
+            <h3>{{ book.title }}</h3>
             <img :src="book.img" alt="" />
           </li>
         </ul>
@@ -56,6 +56,7 @@ export default {
       axios
         .get(baseURL, { params: params })
         .then((res) => {
+          this.keyword = "";
           res.data.Items.reduce((acc, cur) => {
             acc.push({
               title: cur.Item.title,
