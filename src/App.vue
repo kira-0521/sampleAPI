@@ -1,15 +1,32 @@
 <template>
   <div>
-    <h1>{{ hello }}</h1>
+    {{ info }}
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
-      hello: "hello world",
+      info: null,
     };
+  },
+  mounted() {
+    const baseURL =
+      "https://app.rakuten.co.jp/services/api/BooksTotal/Search/20170404";
+    const params = {
+      applicationId: "1031111983337341334",
+      booksGenreId: "002",
+      keyword: "漫画",
+    };
+    axios
+      .get(baseURL, { params: params })
+      .then((res) => {
+        this.info = res;
+      })
+      .catch((err) => console.log(err));
   },
 };
 </script>
