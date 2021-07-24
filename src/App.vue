@@ -8,8 +8,8 @@
       @keydown.enter="search"
     />
     <p>{{ pageCount }}ページ目</p>
-    <router-link :to="'/' + (Number($route.params.id) - 1)">前へ</router-link>
-    <router-link :to="'/' + (Number($route.params.id) + 1)">次へ</router-link>
+    <button class="btn" @click="prev">前へ</button>
+    <button class="btn" @click="next">次へ</button>
 
     <section class="error" v-if="errored">
       <p>
@@ -34,9 +34,13 @@ export default {
       errored: false,
     };
   },
+  watch: {
+    pageCount() {
+      this.search();
+    },
+  },
   methods: {
-    async search(event) {
-      if (event.keyCode !== 13) return;
+    async search() {
       const baseURL =
         "https://app.rakuten.co.jp/services/api/BooksTotal/Search/20170404";
       const bookParams = {
@@ -49,6 +53,8 @@ export default {
       await axios
         .get(baseURL, { params: bookParams })
         .then((res) => {
+          this.books = [];
+          console.log(this.books);
           res.data.Items.reduce((acc, cur) => {
             acc.push({
               title: cur.Item.title,
@@ -62,6 +68,12 @@ export default {
           this.errored = true;
         });
     },
+    prev() {
+      this.pageCount <= 1 ? (this.pageCount = 20) : this.pageCount--;
+    },
+    next() {
+      this.pageCount >= 20 ? (this.pageCount = 1) : this.pageCount++;
+    },
   },
 };
 </script>
@@ -72,5 +84,12 @@ h1 {
 }
 ul {
   list-style: none;
+}
+.btn {
+  border: solid 1px black;
+  background-color: aqua;
+  color: #fff;
+  font-weight: bold;
+  margin: 2px;
 }
 </style>

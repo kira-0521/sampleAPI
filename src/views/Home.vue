@@ -1,6 +1,7 @@
 <template>
   <div class="home">
     <Page :books="books"></Page>
+    <!-- search発動と同時にネストされたコンポーネントへのパスを通す必要がある？ -->
   </div>
 </template>
 
