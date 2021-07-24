@@ -54,7 +54,6 @@ export default {
         .get(baseURL, { params: bookParams })
         .then((res) => {
           this.books = [];
-          console.log(this.books);
           res.data.Items.reduce((acc, cur) => {
             acc.push({
               title: cur.Item.title,
